@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Look Closer</title>
+<meta name="description" content="A 34-second identity film for Omar: one red thread from an oscilloscope trace to a name.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Fraunces:ital,opsz,wght@1,9..144,300&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one dark viewing room. The film sits on top; below it a single red thread runs down the page and pins every moment of the film in order. */
+:root {
+  color-scheme: dark;
+  --ink: #070605;
+  --ink-raise: #100d0b;
+  --rule: #2b2621;
+  --paper: #ece5d5;
+  --dim: #a29a8b;
+  --faint: #6a6358;
+  --phos: #7df59c;
+  --blue: #a9c6e6;
+  --amber: #ffb23e;
+  --red: #d3262e;
+  --thread: #b71e27;
+  --brass: #d9a948;
+  --plate: #e4dcc7;
+  --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --f-serif: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --gutter: clamp(16px, 4vw, 48px);
+  --measure: 62ch;
+}
+* { box-sizing: border-box; }
+html { background: var(--ink); }
+body {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--f-display);
+  font-variation-settings: "wdth" 100;
+  font-size: 17px;
+  line-height: 1.55;
+  margin: 0;
+  padding-inline: var(--gutter);
+  padding-block: 0 72px;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--paper); }
+:focus-visible { outline: 2px solid var(--phos); outline-offset: 3px; }
+.wrap { max-width: 1240px; margin-inline: auto; }
+.mono { font-family: var(--f-mono); font-size: 12.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--dim); }
+
+/* ---------- top line */
+.topline {
+  display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; align-items: baseline;
+  padding-block: 22px 18px;
+}
+.topline .for { font-family: var(--f-serif); font-style: italic; font-weight: 300; font-size: 19px; color: var(--paper); letter-spacing: 0; text-transform: none; }
+
+/* ---------- player */
+.player { position: relative; }
+.screen {
+  position: relative; aspect-ratio: 16 / 9; width: 100%; max-width: 100%;
+  background: #000; overflow: hidden; border-radius: 3px;
+  box-shadow: 0 0 0 1px var(--rule), 0 30px 80px -30px rgba(0,0,0,0.9);
+}
+.screen video, .screen img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.start {
+  position: absolute; inset: 0; display: grid; place-items: end start; border: 0; margin: 0;
+  padding: clamp(12px, 3vw, 32px);
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0) 40%, rgba(0,0,0,0.55) 100%);
+  cursor: pointer; color: var(--paper);
+}
+.start span {
+  display: inline-flex; align-items: center; gap: 14px;
+  font-family: var(--f-mono); font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 14px 20px 14px 16px; background: rgba(5,5,5,0.62); border: 1px solid rgba(236,229,213,0.25); border-radius: 2px;
+  backdrop-filter: blur(2px);
+}
+.start i {
+  width: 10px; height: 10px; border-radius: 50%; background: var(--phos);
+  box-shadow: 0 0 0 4px rgba(125,245,156,0.12), 0 0 18px 4px rgba(125,245,156,0.55);
+}
+.start:hover span, .start:focus-visible span { border-color: var(--phos); }
+@media (prefers-reduced-motion: no-preference) {
+  .start i { animation: breathe 1.2s ease-in-out infinite; }
+  @keyframes breathe { 50% { box-shadow: 0 0 0 6px rgba(125,245,156,0.08), 0 0 26px 8px rgba(125,245,156,0.4); } }
+}
+
+/* timeline under the film: the acts, coloured by what they mean */
+.scrub { margin-top: 14px; display: grid; gap: 8px; }
+.acts {
+  position: relative; display: grid; height: 22px; cursor: pointer;
+  grid-template-columns: 4.8fr 4.8fr 4.8fr 4.8fr 4.8fr 6fr 4.4fr; gap: 2px;
+}
+.acts div { position: relative; border-top: 2px solid var(--c); opacity: 0.85; }
+.acts div::after {
+  content: attr(data-n); position: absolute; top: 5px; left: 0;
+  font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim);
+  white-space: nowrap; overflow: hidden; max-width: 100%;
+}
+.head { position: absolute; top: -6px; width: 2px; height: 14px; background: var(--paper); left: 0; pointer-events: none; box-shadow: 0 0 10px rgba(236,229,213,0.6); }
+.readout { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 18px; font-variant-numeric: tabular-nums; }
+.readout b { font-weight: 500; color: var(--paper); }
+
+/* ---------- title */
+.title { padding-block: clamp(48px, 9vw, 110px) 24px; }
+.title h1 {
+  margin: 0; font-weight: 900; line-height: 0.86; letter-spacing: -0.01em;
+  font-variation-settings: "wdth" 125;
+  font-size: clamp(54px, 13.4vw, 196px);
+  text-wrap: balance;
+}
+.title h1 .ghost { color: transparent; -webkit-text-stroke: 1.5px var(--paper); }
+.lede { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px 56px; margin-top: 40px; align-items: start; }
+.lede p { margin: 0; max-width: var(--measure); font-size: clamp(17px, 1.6vw, 20px); }
+.lede p.warm { font-family: var(--f-serif); font-style: italic; font-weight: 300; font-size: clamp(20px, 2.1vw, 27px); line-height: 1.35; color: var(--paper); }
+@media (max-width: 760px) { .lede { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- section heads */
+.sect { margin-top: clamp(72px, 10vw, 130px); }
+.sect > header { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline; justify-content: space-between; border-top: 1px solid var(--rule); padding-top: 18px; margin-bottom: 36px; }
+.sect h2 { margin: 0; font-size: clamp(26px, 3.4vw, 40px); font-weight: 700; font-variation-settings: "wdth" 112; letter-spacing: -0.005em; text-wrap: balance; }
+.sect .note { max-width: var(--measure); margin: 0 0 30px; color: var(--dim); }
+
+/* ---------- the thread */
+.thread { position: relative; padding-left: 64px; }
+.thread::before {
+  content: ""; position: absolute; left: 23px; top: 8px; bottom: 8px; width: 2px;
+  background: linear-gradient(var(--thread), var(--thread)) center / 2px 100% no-repeat;
+  box-shadow: 3px 4px 6px rgba(0,0,0,0.6);
+}
+.act { position: relative; margin-bottom: 56px; }
+.act > h3 {
+  margin: 0 0 18px; display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline;
+  font-size: 15px; font-weight: 600; font-variation-settings: "wdth" 118; letter-spacing: 0.14em; text-transform: uppercase; color: var(--c);
+}
+.act > h3 .mono { color: var(--dim); }
+.moments { display: grid; gap: 22px; }
+.moment {
+  position: relative; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 18px 32px; align-items: center;
+}
+.moment::before { /* the pin */
+  content: ""; position: absolute; left: -48px; top: calc(50% - 7px); width: 14px; height: 14px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff3cf 0 12%, var(--brass) 40%, #5b3a10 100%);
+  box-shadow: 2px 3px 4px rgba(0,0,0,0.7);
+}
+.shot {
+  position: relative; display: block; width: 100%; max-width: 100%; aspect-ratio: 16 / 9; padding: 0; border: 0; margin: 0;
+  background: #000; cursor: pointer; overflow: hidden; border-radius: 2px;
+  box-shadow: 0 0 0 1px var(--rule);
+}
+.shot img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s cubic-bezier(.2,.7,.2,1), filter 0.4s; }
+.shot .t {
+  position: absolute; left: 10px; bottom: 9px; padding: 3px 7px; background: rgba(5,5,5,0.7);
+  font-family: var(--f-mono); font-size: 11.5px; letter-spacing: 0.08em; color: var(--paper); font-variant-numeric: tabular-nums;
+}
+.shot:hover img, .shot:focus-visible img { transform: scale(1.035); }
+.shot:hover .t, .shot:focus-visible .t { background: var(--thread); }
+.moment p { margin: 0; max-width: 46ch; }
+.moment p em { font-style: normal; font-family: var(--f-mono); font-size: 0.86em; color: var(--c); }
+@media (max-width: 760px) {
+  .thread { padding-left: 40px; }
+  .thread::before { left: 13px; }
+  .moment { grid-template-columns: minmax(0, 1fr); }
+  .moment::before { left: -34px; top: 18px; }
+}
+
+/* ---------- score strip */
+.strip-wrap { position: relative; background: var(--ink-raise); border: 1px solid var(--rule); border-radius: 3px; padding: 14px 14px 10px; }
+canvas#score { display: block; width: 100%; height: 236px; cursor: pointer; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 20px; margin-top: 10px; }
+
+/* ---------- facts */
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 0; border-top: 1px solid var(--rule); }
+.facts div { padding: 18px 18px 20px 0; border-bottom: 1px solid var(--rule); min-width: 0; }
+.facts dt { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); margin-bottom: 6px; }
+.facts dd { margin: 0; font-size: 21px; font-weight: 600; font-variation-settings: "wdth" 108; line-height: 1.25; }
+.facts dd small { display: block; font-size: 14px; font-weight: 400; color: var(--dim); font-variation-settings: "wdth" 100; margin-top: 4px; }
+
+footer { margin-top: clamp(72px, 10vw, 120px); display: flex; flex-wrap: wrap; gap: 10px 28px; justify-content: space-between; align-items: center; border-top: 1px solid var(--rule); padding-top: 20px; }
+footer .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--phos); box-shadow: 0 0 10px 2px rgba(125,245,156,0.55); margin-right: 10px; vertical-align: 1px; }
+</style>
+
+<div class="wrap">
+  <div class="topline">
+    <span class="mono for">An identity film for Omar</span>
+    <span class="mono">34.4 s · 1920 × 1080 · 60 fps · original score</span>
+  </div>
+
+  <section class="player" aria-label="The film">
+    <div class="screen">
+      <video id="film" playsinline preload="metadata" poster="poster.jpg" aria-label="Look Closer, a 34-second film"></video>
+      <button class="start" id="start" type="button"><span><i aria-hidden="true"></i>Play with sound</span></button>
+    </div>
+    <div class="scrub">
+      <div class="acts" id="acts" role="slider" tabindex="0" aria-label="Seek through the film" aria-valuemin="0" aria-valuemax="34.4" aria-valuenow="0">
+        <div style="--c: var(--phos)" data-n="I · Signal"></div>
+        <div style="--c: var(--phos)" data-n="Question"></div>
+        <div style="--c: var(--blue)" data-n="II · System"></div>
+        <div style="--c: var(--plate)" data-n="III · Curiosity"></div>
+        <div style="--c: var(--amber)" data-n="IV · Human"></div>
+        <div style="--c: var(--red)" data-n="V · Synthesis"></div>
+        <div style="--c: var(--dim)" data-n="One thought"></div>
+        <span class="head" id="head"></span>
+      </div>
+      <div class="readout mono">
+        <span><b id="tc">00:00.00</b> / 00:34.40</span>
+        <span>bar <b id="bar">1</b> · beat <b id="beat">1</b> · frame <b id="frame">0</b></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="title">
+    <h1>LOOK <span class="ghost">CLOSER</span></h1>
+    <div class="lede">
+      <p class="warm">Every time you look closer, a surface turns out to be a mechanism. Every time you pull back, the mechanism turns out to be human.</p>
+      <p>A 34-second identity film for Omar, who would rather open the machine than press its buttons. One red thread runs through all of it without breaking. It starts as an oscilloscope trace and becomes a scanline, a network link, the path of one wrong packet, a worldline, a guitar string, and finally the string on an investigation board.</p>
+    </div>
+  </section>
+
+  <section class="sect" aria-labelledby="h-thread">
+    <header><h2 id="h-thread">The thread, moment by moment</h2><span class="mono">Select a frame to play from there</span></header>
+    <div class="thread">
+
+      <div class="act" style="--c: var(--phos)">
+        <h3>I · Signal <span class="mono">0.0 – 9.6 s</span></h3>
+        <div class="moments">
+          <div class="moment"><button class="shot" data-t="0" type="button"><img src="stills/s4_2.jpg" alt="An oscilloscope screen with a clean green sine wave on its graticule"><span class="t">00:00.00</span></button>
+            <p>A dot, then a sweep, then noise. A sine wave locks, and the scope reads <em>164.81 Hz</em>, the E3 you are hearing.</p></div>
+          <div class="moment"><button class="shot" data-t="4.8" type="button"><img src="stills/s6_72.jpg" alt="A green CRT terminal showing the prompt: why?"><span class="t">00:04.80</span></button>
+            <p>The dot opens into a raster and a terminal asks one question: <em>&gt; why?</em></p></div>
+          <div class="moment"><button class="shot" data-t="7.2" type="button"><img src="stills/s7_62.jpg" alt="The camera diving toward the question mark as the word CLOSER flies past"><span class="t">00:07.20</span></button>
+            <p>We dive into the dot of the question mark. It is one phosphor pixel made of three scanlines, and one of those scanlines becomes a network link.</p></div>
+        </div>
+      </div>
+
+      <div class="act" style="--c: var(--blue)">
+        <h3>II · System <span class="mono">9.6 – 14.4 s</span></h3>
+        <div class="moments">
+          <div class="moment"><button class="shot" data-t="9.6" type="button"><img src="stills/s11_4.jpg" alt="A precise network topology with green packets moving through gateways, services and hosts"><span class="t">00:09.60</span></button>
+            <p>Enter lands on the downbeat of <em>tcpdump -i any</em>. The scanline opens into SYSTEMS, and the letters are windows onto live traffic. One host calls home every <em>600 ms</em>, exactly one beat of the song.</p></div>
+          <div class="moment"><button class="shot" data-t="12.0" type="button"><img src="stills/s13_5.jpg" alt="The anomaly path in red, a timing ruler marked 600 ms, and the host's process tree"><span class="t">00:12.00</span></button>
+            <p>The pattern is caught. Irrelevant paths fall away, the host's process tree opens to <em>updater 4117</em>, a decision forms, and the host goes dark. A red line stays behind.</p></div>
+        </div>
+      </div>
+
+      <div class="act" style="--c: var(--plate)">
+        <h3>III · Curiosity <span class="mono">14.4 – 19.2 s</span></h3>
+        <div class="moments">
+          <div class="moment"><button class="shot" data-t="14.4" type="button"><img src="stills/s15_9.jpg" alt="A star field with a celestial grid; ignited stars form an X around a red star"><span class="t">00:14.40</span></button>
+            <p>Pull back and the network is a speck in a sky of nodes. Stars ignite on the bells and fall into line as a light cone.</p></div>
+          <div class="moment"><button class="shot" data-t="16.8" type="button"><img src="stills/s17_9.jpg" alt="A glass-plate negative with a spacetime diagram, a red worldline forking, years 1920 to 2052"><span class="t">00:16.80</span></button>
+            <p>The shutter fires. The sky becomes a 1986 glass-plate negative, the red line becomes a worldline, and it forks into two worlds.</p></div>
+          <div class="moment"><button class="shot" data-t="18.0" type="button"><img src="stills/s18_5.jpg" alt="The plate's grid bent into a wormhole funnel with a dark throat"><span class="t">00:18.00</span></button>
+            <p>The plate's measuring grid bends into an Einstein–Rosen bridge, and we dive through the throat.</p></div>
+        </div>
+      </div>
+
+      <div class="act" style="--c: var(--amber)">
+        <h3>IV · Human <span class="mono">19.2 – 24.0 s</span></h3>
+        <div class="moments">
+          <div class="moment"><button class="shot" data-t="19.2" type="button"><img src="stills/s20_2.jpg" alt="An amber monitor plotting a dense waveform labelled TRACE 07, with a playhead"><span class="t">00:19.20</span></button>
+            <p>An amber monitor plots a measurement. The playhead shows it is the music you are hearing. It is a guitar.</p></div>
+          <div class="moment"><button class="shot" data-t="21.6" type="button"><img src="stills/s21_95.jpg" alt="A red thread lying across cork, bent by a vibration"><span class="t">00:21.60</span></button>
+            <p>Look closer and the trace becomes a red thread on cork, bending with each pluck. Then one beat of silence.</p></div>
+        </div>
+      </div>
+
+      <div class="act" style="--c: var(--red)">
+        <h3>V · Synthesis <span class="mono">24.0 – 30.0 s</span></h3>
+        <div class="moments">
+          <div class="moment"><button class="shot" data-t="24.0" type="button"><img src="stills/s25_7.jpg" alt="An investigation board under a lamp: polaroids, printouts, a cassette, linked by red string"><span class="t">00:24.00</span></button>
+            <p>The release throws the camera off the thread. It is pinned to a board, and every clue on it is a printed frame of this film, in the order you saw them.</p></div>
+          <div class="moment"><button class="shot" data-t="26.4" type="button"><img src="stills/s28_95.jpg" alt="Red string art on the board spelling OMAR"><span class="t">00:26.40</span></button>
+            <p>The beam from the first frame runs the thread through every clue, then weaves the answer to <em>why?</em> across the nails.</p></div>
+        </div>
+      </div>
+
+      <div class="act" style="--c: var(--dim)">
+        <h3>One thought <span class="mono">30.0 – 34.4 s</span></h3>
+        <div class="moments">
+          <div class="moment"><button class="shot" data-t="30.0" type="button"><img src="stills/s31_9.jpg" alt="Black screen with the words: Understand the system. Then build a better one."><span class="t">00:30.00</span></button>
+            <p>Silence. The picture then shuts off like an old CRT and collapses into the dot the film began with, so it loops.</p></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="sect" aria-labelledby="h-score">
+    <header><h2 id="h-score">The score is the clock</h2><span class="mono">100 BPM · E minor · 1 beat = 36 frames</span></header>
+    <p class="note">The music was written for this film and synthesized in code. Every mark below is a note or event from the score file the animation is timed to. The beacon is red from the moment it is caught. Select anywhere on the strip to play from there.</p>
+    <div class="strip-wrap"><canvas id="score" aria-label="Score timeline with lanes for arpeggio, keys, packets, beacon, bells, guitar, lead, kick and snare"></canvas></div>
+  </section>
+
+  <section class="sect" aria-labelledby="h-made">
+    <header><h2 id="h-made">How it was made</h2><span class="mono">No footage, samples or loops</span></header>
+    <dl class="facts">
+      <div><dt>Frames</dt><dd>2,064<small>at 60 fps, each rendered as a pure function of time</small></dd></div>
+      <div><dt>Motion blur</dt><dd>2 to 12 sub-frames<small>averaged over a 180° shutter for every frame</small></dd></div>
+      <div><dt>Score</dt><dd>Synthesized from scratch<small>plucked-string guitars, amp model, analog-style synths, drums</small></dd></div>
+      <div><dt>Render</dt><dd>About 9 minutes<small>on 4 CPU cores, piped straight into the encoder</small></dd></div>
+      <div><dt>The beacon</dt><dd>Every 600 ms<small>the attack and the song share one tempo</small></dd></div>
+      <div><dt>Type</dt><dd>Archivo, IBM Plex Mono<small>with Fraunces, STIX Two and a hand-built 5×7 CRT font</small></dd></div>
+    </dl>
+  </section>
+
+  <footer>
+    <span class="mono"><span class="dot" aria-hidden="true"></span>Made for Omar with Claude Code</span>
+    <span class="mono">Watch with sound</span>
+  </footer>
+</div>
+
+<script>
+(() => {
+  const DUR = 34.4, FPS = 60, BEAT = 0.6, BAR = 2.4;
+  const video = document.getElementById('film');
+  const start = document.getElementById('start');
+  const head = document.getElementById('head');
+  const acts = document.getElementById('acts');
+  const tc = document.getElementById('tc'), barEl = document.getElementById('bar'), beatEl = document.getElementById('beat'), frameEl = document.getElementById('frame');
+
+  // ---- source: three fragments stitched with Media Source Extensions; a single 720p file otherwise
+  const PARTS = ['film-part0.mp4', 'film-part1.mp4', 'film-part2.mp4'];
+  const MIME = 'video/mp4; codecs="avc1.64002a, mp4a.40.2"';
+  let usingFallback = false;
+  function fallback() {
+    if (usingFallback) return;
+    usingFallback = true;
+    const t = video.currentTime || 0;
+    const wasPlaying = !video.paused;
+    video.removeAttribute('src');
+    video.src = 'film-720.mp4';
+    video.load();
+    video.addEventListener('loadedmetadata', () => {
+      if (t) video.currentTime = t;
+      if (wasPlaying) video.play().catch(() => {});
+    }, { once: true });
+  }
+  function appendTo(sb, buf) {
+    return new Promise((res, rej) => {
+      const ok = () => { sb.removeEventListener('error', bad); res(); };
+      const bad = () => { sb.removeEventListener('updateend', ok); rej(new Error('append failed')); };
+      sb.addEventListener('updateend', ok, { once: true });
+      sb.addEventListener('error', bad, { once: true });
+      sb.appendBuffer(buf);
+    });
+  }
+  const MS = window.MediaSource;
+  if (MS && typeof MS.isTypeSupported === 'function' && MS.isTypeSupported(MIME)) {
+    try {
+      const ms = new MS();
+      video.src = URL.createObjectURL(ms);
+      ms.addEventListener('sourceopen', async () => {
+        try {
+          const sb = ms.addSourceBuffer(MIME);
+          for (const p of PARTS) {
+            const r = await fetch(p);
+            if (!r.ok) throw new Error('fetch ' + p);
+            await appendTo(sb, await r.arrayBuffer());
+          }
+          if (ms.readyState === 'open') ms.endOfStream();
+        } catch (e) { fallback(); }
+      }, { once: true });
+      setTimeout(() => { if (!usingFallback && video.readyState < 1) fallback(); }, 9000);
+    } catch (e) { fallback(); }
+  } else {
+    fallback();
+  }
+  video.addEventListener('error', () => { if (!usingFallback) fallback(); });
+
+  // ---- playback
+  function play(t) {
+    start.hidden = true;
+    video.controls = true;
+    video.muted = false;
+    if (typeof t === 'number') {
+      const seek = () => { video.currentTime = Math.min(DUR - 0.05, Math.max(0, t)); };
+      if (video.readyState >= 1) seek(); else video.addEventListener('loadedmetadata', seek, { once: true });
+    }
+    const p = video.play();
+    if (p && p.catch) p.catch(() => { start.hidden = false; });
+  }
+  start.addEventListener('click', () => play());
+  document.querySelectorAll('.shot').forEach((b) => b.addEventListener('click', () => {
+    play(parseFloat(b.dataset.t));
+    document.querySelector('.player').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
+  }));
+  const seekFrom = (el, clientX) => {
+    const r = el.getBoundingClientRect();
+    return Math.min(1, Math.max(0, (clientX - r.left) / r.width)) * DUR;
+  };
+  acts.addEventListener('click', (e) => play(seekFrom(acts, e.clientX)));
+  acts.addEventListener('keydown', (e) => {
+    const step = e.shiftKey ? BAR : BEAT;
+    if (e.key === 'ArrowRight') { e.preventDefault(); play((video.currentTime || 0) + step); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); play((video.currentTime || 0) - step); }
+  });
+
+  // ---- score strip
+  const L = {"arp":[],"keys":[],"packets":[],"beacon":[],"bells":[],"guitar":[],"lead":[],"kick":[],"snare":[]};
+  const SCORE_DATA = {"arp":[4.8,4.95,5.1,5.25,5.4,5.55,5.7,5.85,6.0,6.15,6.3,6.45,6.6,6.75,6.9,7.05,7.2,7.35,7.5,7.65,7.8,7.95,8.1,8.25,8.4,8.55,8.7,8.85,9.0,9.15,9.3,9.45,9.6,9.75,9.9,10.05,10.2,10.35,10.5,10.65,10.8,10.95,11.1,11.25,11.4,11.55,11.7,11.85,12.0,12.15,12.3,12.45,12.6,12.75,12.9,13.05,13.2,13.35,13.5,13.65,13.8,13.95,14.1,14.25,14.4,14.55,14.7,14.85,15.0,15.15,15.3,15.45,15.6,15.75,15.9,16.05,16.2,16.35,16.5,16.65,16.8,16.95,17.1,17.25,17.4,17.55,17.7,17.85,18.0,18.15,18.3,18.45,18.6,18.75,18.9,19.05,22.8,22.95,23.1,23.25,24.0,24.15,24.3,24.45,24.6,24.75,24.9,25.05,25.2,25.35,25.5,25.65,25.8,25.95,26.1,26.25,26.4,26.55,26.7,26.85,27.0,27.15,27.3,27.45,27.6,27.75,27.9,28.05,28.2,28.35,28.5,28.65],"keys":[6.0,6.15,6.3,6.6,8.4,8.475,8.55,8.625,8.7,8.775,8.85,8.925,9.0,9.075,9.15,9.225,9.3,9.375,9.6,30.25,31.45],"packets":[9.675,9.75,9.825,9.9,9.975,10.05,10.125,10.35,10.425,10.65,10.725,10.8,10.875,11.025,11.1,11.775,11.85,12.225,12.3,12.45,12.6,12.75,12.975,13.125],"beacon":[[10.2,0],[10.8,0],[11.4,0],[12.0,1],[12.6,1],[13.2,1]],"bells":[14.55,14.7,15.0,15.15,15.45,15.75,16.2,16.5],"guitar":[19.2,19.5,19.8,20.1,20.4,20.7,21.0,21.3,21.6,21.9,22.2,22.5,22.8,22.95,23.1,23.25,24.0,25.2,26.4,27.6,28.8],"lead":[[24.0,0.9,83],[24.9,0.3,81],[25.2,0.6,79],[25.8,0.3,76],[26.1,0.3,78],[26.4,0.6,81],[27.0,0.6,86],[27.6,0.3,84],[27.9,0.3,83],[28.2,0.3,81],[28.5,0.3,78],[28.8,1.2,76]],"kick":[9.6,10.2,10.8,11.4,12.0,12.6,13.2,13.8,20.4,21.6,22.2,22.8,24.0,24.9,25.2,26.4,27.3,27.6],"snare":[24.6,25.8,27.0,28.2,18.0,18.15,18.3,18.45,18.6,18.75,18.825,18.9,18.975,19.05,19.087,19.125,19.163]};
+  Object.assign(L, SCORE_DATA);
+  const css = getComputedStyle(document.documentElement);
+  const tok = (n) => css.getPropertyValue(n).trim();
+  const LANES = [
+    ['Arp', 'arp', '--phos', 0.55], ['Keys', 'keys', '--paper', 0.9], ['Packets', 'packets', '--phos', 0.9], ['Beacon', 'beacon', '--red', 1],
+    ['Bells', 'bells', '--plate', 0.95], ['Guitar', 'guitar', '--amber', 1], ['Lead', 'lead', '--red', 1], ['Kick', 'kick', '--paper', 0.8], ['Snare', 'snare', '--dim', 0.9],
+  ];
+  const SECTIONS = [[0, 4.8, '--phos'], [4.8, 9.6, '--phos'], [9.6, 14.4, '--blue'], [14.4, 19.2, '--plate'], [19.2, 24, '--amber'], [24, 30, '--red'], [30, 34.4, '--dim']];
+  const cv = document.getElementById('score');
+  const g = cv.getContext('2d');
+  let W = 0, H = 0, dpr = 1;
+  function size() {
+    dpr = Math.min(2, window.devicePixelRatio || 1);
+    const r = cv.getBoundingClientRect();
+    W = r.width; H = r.height;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    draw();
+  }
+  function hexA(hex, a) {
+    const n = parseInt(hex.replace('#', ''), 16);
+    return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+  }
+  function draw() {
+    if (!W) return;
+    const t = video.currentTime || 0;
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.clearRect(0, 0, W, H);
+    const labelW = W < 520 ? 52 : 70;
+    const x0 = labelW, x1 = W - 4;
+    const X = (s) => x0 + (s / DUR) * (x1 - x0);
+    const top = 16, laneH = (H - top - 18) / LANES.length;
+    // sections
+    for (const [a, b, c] of SECTIONS) { g.fillStyle = hexA(tok(c), 0.85); g.fillRect(X(a) + 1, 2, X(b) - X(a) - 2, 3); }
+    // beat grid
+    for (let k = 0; k * BEAT <= DUR + 1e-6; k++) {
+      const x = Math.round(X(k * BEAT)) + 0.5;
+      g.fillStyle = k % 4 === 0 ? hexA(tok('--paper'), 0.12) : hexA(tok('--paper'), 0.045);
+      g.fillRect(x, top - 4, 1, H - top - 10);
+    }
+    g.font = `500 ${W < 520 ? 9.5 : 10.5}px ${tok('--f-mono')}`;
+    g.textBaseline = 'middle';
+    LANES.forEach(([name, key, col, a], i) => {
+      const y = top + i * laneH + laneH / 2;
+      g.fillStyle = hexA(tok('--dim'), 1);
+      g.fillText(name.toUpperCase(), 0, y);
+      const c = tok(col);
+      const ev = L[key] || [];
+      for (const e of ev) {
+        if (key === 'lead') {
+          const [s, d] = e;
+          g.fillStyle = hexA(c, s <= t ? 1 : 0.55);
+          g.fillRect(X(s), y - 3, Math.max(2, X(s + d) - X(s) - 1), 6);
+          continue;
+        }
+        let s = e, colr = c;
+        if (key === 'beacon') { s = e[0]; colr = e[1] ? tok('--red') : tok('--phos'); }
+        const played = s <= t;
+        g.fillStyle = hexA(colr, (played ? 1 : 0.42) * a);
+        const h = key === 'arp' ? laneH * 0.36 : key === 'kick' || key === 'beacon' ? laneH * 0.62 : laneH * 0.5;
+        g.fillRect(Math.round(X(s)), y - h / 2, key === 'beacon' ? 2 : 1, h);
+      }
+    });
+    // time labels
+    g.fillStyle = hexA(tok('--faint'), 1);
+    g.textBaseline = 'alphabetic';
+    for (const s of [0, 9.6, 19.2, 28.8]) g.fillText(`${s.toFixed(1)} s`, X(s) + 3, H - 2);
+    // playhead
+    const xh = X(t);
+    g.fillStyle = tok('--thread');
+    g.fillRect(Math.round(xh) - 1, 0, 2, H - 12);
+    g.fillStyle = hexA(tok('--red'), 0.25);
+    g.fillRect(Math.round(xh) - 5, 0, 10, H - 12);
+  }
+  cv.addEventListener('click', (e) => {
+    const r = cv.getBoundingClientRect();
+    const labelW = W < 520 ? 52 : 70;
+    const s = ((e.clientX - r.left - labelW) / (W - 4 - labelW)) * DUR;
+    play(Math.min(DUR, Math.max(0, s)));
+  });
+
+  // ---- readout
+  const pad = (n, k) => String(n).padStart(k, '0');
+  function tick() {
+    const t = video.currentTime || 0;
+    head.style.left = `calc(${(t / DUR) * 100}% - 1px)`;
+    acts.setAttribute('aria-valuenow', t.toFixed(1));
+    const m = Math.floor(t / 60), s = t - m * 60;
+    tc.textContent = `${pad(m, 2)}:${pad(Math.floor(s), 2)}.${pad(Math.floor((s % 1) * 100), 2)}`;
+    barEl.textContent = Math.floor(t / BAR) + 1;
+    beatEl.textContent = (Math.floor(t / BEAT) % 4) + 1;
+    frameEl.textContent = Math.min(2063, Math.floor(t * FPS));
+    draw();
+  }
+  let raf = 0;
+  const loop = () => { tick(); raf = video.paused ? 0 : requestAnimationFrame(loop); };
+  video.addEventListener('play', () => { if (!raf) raf = requestAnimationFrame(loop); });
+  video.addEventListener('seeked', tick);
+  video.addEventListener('timeupdate', () => { if (!raf) tick(); });
+  video.addEventListener('ended', () => { start.hidden = false; start.querySelector('span').lastChild.textContent = 'Play again'; });
+  window.addEventListener('resize', size);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(size);
+  size();
+  tick();
+})();
+</script>
